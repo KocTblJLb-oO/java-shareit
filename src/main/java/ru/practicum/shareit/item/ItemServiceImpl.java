@@ -74,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ValidationException(message);
         }
     }
+
     private void validate(Item item, Long owner) {
         if (owner == null) {
             String message = "Владелец: " + owner + " - не может быть пустым";
@@ -81,5 +82,4 @@ public class ItemServiceImpl implements ItemService {
             throw new ValidationException(message);
         }
     }
-
 }

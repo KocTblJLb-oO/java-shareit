@@ -82,7 +82,7 @@ public class ItemStorageInMemory implements ItemStorage {
     // Поиск вещи
     public List<ItemDto> itemSearch(String text) {
         log.info("Метод: {}. {}", getMethod(), text);
-        if(text.isBlank()){
+        if (text.isBlank()) {
             return Collections.emptyList();
         }
         return itemHashMap.values().stream()

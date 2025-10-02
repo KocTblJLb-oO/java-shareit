@@ -51,7 +51,7 @@ public class UserStorageInMemory implements UserStorage {
 
     @Override
     public UserDto getUserById(long id) {
-        if (!userHashMap.containsKey(id)){
+        if (!userHashMap.containsKey(id)) {
             String message = "Владелец: " + id + " - не существует";
             log.error(message);
             throw new NotFoundException(message);
