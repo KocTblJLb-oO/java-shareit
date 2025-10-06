@@ -2,12 +2,12 @@ package ru.practicum.shareit.user;
 
 public interface UserStorage {
     // Создание пользователя
-    UserDto create(User user);
+    User create(User user);
 
     //Обновление пользователя
-    UserDto update(long id, User newUser);
+    User update(long id, User newUser);
 
-    UserDto getUserById(long id);
+    User findUserById(long id);
 
     // Удаление пользователя
     void deleteUser(long id);

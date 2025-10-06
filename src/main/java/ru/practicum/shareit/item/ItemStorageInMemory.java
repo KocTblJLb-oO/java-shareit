@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -8,25 +9,21 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserStorageInMemory;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class ItemStorageInMemory implements ItemStorage {
     private Long currentMaxId = 0L;
     private final HashMap<Long, Item> itemHashMap = new HashMap<>();
-    UserStorageInMemory userStorageInMemory;
-
-    public ItemStorageInMemory(UserStorageInMemory userStorageInMemory) {
-        this.userStorageInMemory = userStorageInMemory;
-    }
+    private final UserStorageInMemory userStorageInMemory;
 
     // Добавление вещи
     @Override
-    public ItemDto create(@Valid Item item) {
-        log.info("Метод: {}. {}", getMethod(), item);
+    public Item create(@Valid Item item) {
+        log.info("Метод: create. {}", item);
         log.debug("Было вещей: {}", itemHashMap.size());
         validateItem(item);
         long newId = getNextId();
@@ -35,13 +32,13 @@ public class ItemStorageInMemory implements ItemStorage {
         itemHashMap.put(newId, item);
 
         log.debug("Стало вещей: {}", itemHashMap.size());
-        return ItemMapper.toItemDto(itemHashMap.get(item.getId()));
+        return itemHashMap.get(item.getId());
     }
 
     // Обновление вещи
     @Override
-    public ItemDto update(Long id, ItemDto newItem) {
-        log.info("Метод: {}. {}", getMethod(), newItem);
+    public Item update(Long id, Item newItem) {
+        log.info("Метод: update. {}", newItem);
         validateItem(newItem);
         Item oldItem = itemHashMap.get(id);
 
@@ -59,19 +56,25 @@ public class ItemStorageInMemory implements ItemStorage {
         }
 
         itemHashMap.put(id, oldItem);
-        return ItemMapper.toItemDto(itemHashMap.get(id));
+        return itemHashMap.get(id);
     }
 
     // Получение вещи
     @Override
-    public ItemDto getItemById(long id) {
-        return ItemMapper.toItemDto(itemHashMap.get(id));
+    public Item getItemById(long id) {
+        if (!itemHashMap.containsKey(id)) {
+            String message = "Вещь: " + id + " - не найдена ";
+            log.error(message);
+            throw new NotFoundException(message);
+        }
+
+        return itemHashMap.get(id);
     }
 
     // Получение всех вещей пользователя
     @Override
     public List<ItemDto> getAllItemsFromUser(Long owner) {
-        log.info("Метод: {}. {}", getMethod(), owner);
+        log.info("Метод: getAllItemsFromUser. {}", owner);
 
         return itemHashMap.values().stream()
                 .filter(item -> item.getOwner().equals(owner))
@@ -80,16 +83,13 @@ public class ItemStorageInMemory implements ItemStorage {
     }
 
     // Поиск вещи
-    public List<ItemDto> itemSearch(String text) {
-        log.info("Метод: {}. {}", getMethod(), text);
-        if (text.isBlank()) {
-            return Collections.emptyList();
-        }
+    public List<Item> itemSearch(String text) {
+        log.info("Метод: itemSearch. {}", text);
+
         return itemHashMap.values().stream()
                 .filter(Item::getAvailable)
                 .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
                         || item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                .map(ItemMapper::toItemDto)
                 .toList();
     }
 
@@ -101,16 +101,11 @@ public class ItemStorageInMemory implements ItemStorage {
         return ++currentMaxId;
     }
 
-    // Возвращает имя метода для логирования
-    private String getMethod() {
-        return new Throwable().getStackTrace()[1].getMethodName();
-    }
-
     // Проверка вещи
     private void validateItem(Item item) {
-        log.debug("Метод: {}. {}", getMethod(), item);
+        log.debug("Метод: validateItem. {}", item);
         // Если пользователя нет, исключение будет в методе getUserById
-        userStorageInMemory.getUserById(item.getOwner());
+        userStorageInMemory.findUserById(item.getOwner());
         // Проверка владельца при обновлении
         if (itemHashMap.containsKey(item.getId())) {
             log.debug("Вещь существует");
@@ -121,10 +116,6 @@ public class ItemStorageInMemory implements ItemStorage {
                 throw new NotFoundException(message);
             }
         }
-    }
-
-    private void validateItem(ItemDto item) {
-        validateItem(ItemMapper.dtoToItem(item));
     }
 
 }

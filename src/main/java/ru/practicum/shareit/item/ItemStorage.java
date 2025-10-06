@@ -6,12 +6,12 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.List;
 
 public interface ItemStorage {
-    ItemDto create(Item item);
+    Item create(Item item);
 
     // Обновление вещи
-    ItemDto update(Long id, ItemDto newItem);
+    Item update(Long id, Item newItem);
 
-    ItemDto getItemById(long id);
+    Item getItemById(long id);
 
     List<ItemDto> getAllItemsFromUser(Long owner);
 }

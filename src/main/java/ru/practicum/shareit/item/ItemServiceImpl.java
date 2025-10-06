@@ -1,83 +1,74 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemStorageInMemory itemStorageInMemory;
 
-    public ItemServiceImpl(ItemStorageInMemory itemStorageInMemory) {
-        this.itemStorageInMemory = itemStorageInMemory;
-    }
-
     // Добавление вещи
     @Override
-    public ItemDto create(@Valid Item item, Long owner) {
-        log.info("Метод: {}. {}", getMethod(), item);
+    public ItemDto create(ItemDto item, Long owner) {
+        log.info("Метод: create. {}", item);
         validate(item, owner);
         item.setOwner(owner);
 
-        return itemStorageInMemory.create(item);
+        return ItemMapper.toItemDto(itemStorageInMemory.create(ItemMapper.toItem(item)));
     }
 
     // Обновление вещи
     @Override
     public ItemDto update(Long id, ItemDto newItem, Long owner) {
-        log.info("Метод: {}. {}", getMethod(), newItem);
+        log.info("Метод: update. {}", newItem);
         validate(newItem, owner);
         newItem.setOwner(owner);
-        return itemStorageInMemory.update(id, newItem);
+        return ItemMapper.toItemDto(itemStorageInMemory.update(id, ItemMapper.toItem(newItem)));
     }
 
     // Получение вещи
     @Override
-    public ItemDto getItemById(long id) {
-        log.info("Метод: {}. {}", id);
-        return itemStorageInMemory.getItemById(id);
+    public ItemDto findUserById(long id) {
+        log.info("Метод: findUserById. {}", id);
+        return ItemMapper.toItemDto(itemStorageInMemory.getItemById(id));
     }
 
     // Получение всех вещей пользователя
     @Override
     public List<ItemDto> getAllItemsFromUser(Long owner) {
-        log.info("Метод: {}. {}", getMethod(), owner);
+        log.info("Метод: getAllItemsFromUser. {}", owner);
         return itemStorageInMemory.getAllItemsFromUser(owner);
     }
 
     // Поиск вещи
     @Override
     public List<ItemDto> itemSearch(String text) {
-        log.info("Метод: {}. {}", getMethod(), text);
-        return itemStorageInMemory.itemSearch(text);
+        log.info("Метод: itemSearch. {}", text);
+
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        return itemStorageInMemory.itemSearch(text).stream()
+                .map(ItemMapper::toItemDto)
+                .toList();
     }
         /*
     ------------------------------------------------ СЛУЖЕБНЫЕ МЕТОДЫ
 */
 
-    // Возвращает имя метода для логирования
-    private String getMethod() {
-        return new Throwable().getStackTrace()[1].getMethodName();
-    }
-
     // Проверка вещи
     private void validate(ItemDto item, Long owner) {
         if (owner == null) {
-            String message = "Владелец: " + owner + " - не может быть пустым";
-            log.error(message);
-            throw new ValidationException(message);
-        }
-    }
-
-    private void validate(Item item, Long owner) {
-        if (owner == null) {
-            String message = "Владелец: " + owner + " - не может быть пустым";
+            String message = "Владелец не может быть пустым";
             log.error(message);
             throw new ValidationException(message);
         }

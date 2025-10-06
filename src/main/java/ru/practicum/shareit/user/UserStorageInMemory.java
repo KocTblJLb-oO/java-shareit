@@ -16,8 +16,8 @@ public class UserStorageInMemory implements UserStorage {
 
     // Создание пользователя
     @Override
-    public UserDto create(User user) {
-        log.info("Метод: {}. Новый пользователь: {}", getMethod(), user);
+    public User create(User user) {
+        log.info("Метод: create. Новый пользователь: {}", user);
         log.debug("Было пользователей: {}", userHashMap.size());
         validateUniqueEmail(user);
         long newId = getNextId();
@@ -26,13 +26,13 @@ public class UserStorageInMemory implements UserStorage {
         userHashMap.put(newId, user);
 
         log.debug("Стало пользователей: {}", userHashMap.size());
-        return UserMapper.toUserDto(user);
+        return user;
     }
 
     //Обновление пользователя
     @Override
-    public UserDto update(long id, User newUser) {
-        log.info("Метод: {}. Пользователь для обновления: {}", getMethod(), newUser);
+    public User update(long id, User newUser) {
+        log.info("Метод: update. Пользователь для обновления: {}", newUser);
 
         newUser.setId(id);
 
@@ -46,23 +46,23 @@ public class UserStorageInMemory implements UserStorage {
         }
 
 
-        return UserMapper.toUserDto(userHashMap.get(newUser.getId()));
+        return userHashMap.get(newUser.getId());
     }
 
     @Override
-    public UserDto getUserById(long id) {
+    public User findUserById(long id) {
         if (!userHashMap.containsKey(id)) {
             String message = "Владелец: " + id + " - не существует";
             log.error(message);
             throw new NotFoundException(message);
         }
-        return UserMapper.toUserDto(userHashMap.get(id));
+        return userHashMap.get(id);
     }
 
     // Удаление пользователя
     @Override
     public void deleteUser(long id) {
-        log.info("Метод: {}. Удаление пользователя с id: {}", getMethod(), id);
+        log.info("Метод: deleteUser. Удаление пользователя с id: {}", id);
         userHashMap.remove(id);
     }
 
@@ -75,7 +75,7 @@ public class UserStorageInMemory implements UserStorage {
     }
 
     public void validateUniqueEmail(User newUser) {
-        log.info("Метод: {}. {}", getMethod(), newUser);
+        log.info("Метод: validateUniqueEmail. {}", newUser);
         Optional<User> findUser = userHashMap.values().stream()
                 .filter(user -> user.getEmail().equals(newUser.getEmail()))
                 .findFirst();
@@ -84,11 +84,5 @@ public class UserStorageInMemory implements UserStorage {
             log.error(message);
             throw new DuplicatedDataException(message);
         }
-    }
-
-    // Возвращает имя метода для логирования
-    private String getMethod() {
-        return new Throwable().getStackTrace()[1].getMethodName();
-
     }
 }

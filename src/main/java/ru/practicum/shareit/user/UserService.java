@@ -14,90 +14,39 @@ public class UserService {
         this.userStorageInMemory = userStorageInMemory;
     }
 
-    public UserDto create(User user) {
-        log.info("Метод: {}. Новый пользователь: {}", getMethod(), user);
+    public UserDto create(UserDto user) {
+        log.info("Метод: create. Новый пользователь: {}", user);
         validate(user);
 
-        return userStorageInMemory.create(user);
+        return UserMapper.toUserDto(userStorageInMemory.create(UserMapper.toUser(user)));
     }
 
-
-    public UserDto update(long id, User newUser) {
-        log.info("Метод: {}. Пользователь для обновления: {}", getMethod(), newUser);
-        return userStorageInMemory.update(id, newUser);
+    public UserDto update(long id, UserDto newUser) {
+        log.info("Метод: update. Пользователь для обновления: {}", newUser);
+        return UserMapper.toUserDto(userStorageInMemory.update(id, UserMapper.toUser(newUser)));
     }
 
     // Получение пользователя
-    public UserDto getUserById(long id) {
-        return userStorageInMemory.getUserById(id);
+    public UserDto findUserById(long id) {
+        return UserMapper.toUserDto(userStorageInMemory.findUserById(id));
     }
 
     // Удаление пользователя
     public void deleteUser(long id) {
-        log.info("Метод: {}. Удаление пользователя с id: {}", getMethod(), id);
+        log.info("Метод: deleteUser. Удаление пользователя с id: {}", id);
         userStorageInMemory.deleteUser(id);
     }
 
-    /*
-            // Добавление в друзья
-            public void addFriend(long id, long friendId) {
-                log.info("Метод: {}. ID пользователя: {} ИД друга: {}", getMethod(), id, friendId);
-                checkUser(id);
-                checkUser(friendId);
-
-                userStorage.addFriends(id, friendId);
-            }
-
-            // Удаление из друзей
-            public void deleteFriend(long id, long friendId) {
-                checkUser(id);
-                checkUser(friendId);
-
-                userStorage.deleteFriend(id, friendId);
-            }
-
-            // Получение списка друзей
-            public List<User> getAllFriends(long id) {
-                checkUser(id);
-                return userStorage.getFriends(id);
-            }
-
-            // Список друзей, общих с другим пользователем
-            public Collection<User> getCommonFriend(long id, long otherId) {
-                checkUser(id);
-                checkUser(otherId);
-
-                return userStorage.getCommonFriend(id, otherId);
-            }
-
-
-            */
 /*
    ------------------------------------------------ СЛУЖЕБНЫЕ МЕТОДЫ
-*//*
-
-    // Проверка существования пользователей
-    private void checkUser(long id) {
-        if (!userStorage.existsById(id)) {
-            String message = "Пользователь с ID: " + id + " — не найден.";
-            log.error(message);
-            throw new NotFoundException(message);
-        }
-    }
 */
+
     // Проверка пользователя
-    private void validate(User user) {
+    private void validate(UserDto user) {
         if (user.getEmail() == null) {
             String message = "Email: " + null + " - не может быть пустым";
             log.error(message);
             throw new ValidationException(message);
         }
-    }
-
-
-    // Возвращает имя метода для логирования
-    private String getMethod() {
-        return new Throwable().getStackTrace()[1].getMethodName();
-
     }
 }
