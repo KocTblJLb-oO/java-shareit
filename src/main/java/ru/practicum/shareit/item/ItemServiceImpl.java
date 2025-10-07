@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
@@ -11,9 +11,9 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemStorageInMemory itemStorageInMemory;
+    private final ItemStorage itemStorage;
 
     // Добавление вещи
     @Override
@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
         validate(item, owner);
         item.setOwner(owner);
 
-        return ItemMapper.toItemDto(itemStorageInMemory.create(ItemMapper.toItem(item)));
+        return ItemMapper.toItemDto(itemStorage.create(ItemMapper.toItem(item)));
     }
 
     // Обновление вещи
@@ -31,21 +31,21 @@ public class ItemServiceImpl implements ItemService {
         log.info("Метод: update. {}", newItem);
         validate(newItem, owner);
         newItem.setOwner(owner);
-        return ItemMapper.toItemDto(itemStorageInMemory.update(id, ItemMapper.toItem(newItem)));
+        return ItemMapper.toItemDto(itemStorage.update(id, ItemMapper.toItem(newItem)));
     }
 
     // Получение вещи
     @Override
     public ItemDto findUserById(long id) {
         log.info("Метод: findUserById. {}", id);
-        return ItemMapper.toItemDto(itemStorageInMemory.getItemById(id));
+        return ItemMapper.toItemDto(itemStorage.getItemById(id));
     }
 
     // Получение всех вещей пользователя
     @Override
     public List<ItemDto> getAllItemsFromUser(Long owner) {
         log.info("Метод: getAllItemsFromUser. {}", owner);
-        return itemStorageInMemory.getAllItemsFromUser(owner);
+        return itemStorage.getAllItemsFromUser(owner);
     }
 
     // Поиск вещи
@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return itemStorageInMemory.itemSearch(text).stream()
+        return itemStorage.itemSearch(text).stream()
                 .map(ItemMapper::toItemDto)
                 .toList();
     }

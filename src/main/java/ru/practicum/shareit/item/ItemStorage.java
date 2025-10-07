@@ -14,4 +14,7 @@ public interface ItemStorage {
     Item getItemById(long id);
 
     List<ItemDto> getAllItemsFromUser(Long owner);
+
+    // Поиск вещи
+    List<Item> itemSearch(String text);
 }
