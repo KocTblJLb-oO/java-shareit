@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 public class ItemStorageInMemory implements ItemStorage {
     private Long currentMaxId = 0L;
     private final HashMap<Long, Item> itemHashMap = new HashMap<>();
-    private final UserService userService;
 
     // Добавление вещи
     @Override
@@ -104,8 +102,6 @@ public class ItemStorageInMemory implements ItemStorage {
     // Проверка вещи
     private void validateItem(Item item) {
         log.debug("Метод: validateItem. {}", item);
-        // Если пользователя нет, исключение будет в методе getUserById
-        userService.findUserById(item.getOwner());
         // Проверка владельца при обновлении
         if (itemHashMap.containsKey(item.getId())) {
             log.debug("Вещь существует");

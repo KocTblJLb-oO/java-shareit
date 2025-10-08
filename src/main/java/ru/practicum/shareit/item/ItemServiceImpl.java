@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.UserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,12 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
+    private final UserService userService;
 
     // Добавление вещи
     @Override
     public ItemDto create(ItemDto item, Long owner) {
         log.info("Метод: create. {}", item);
-        validate(item, owner);
+        validateOwner(owner);
         item.setOwner(owner);
 
         return ItemMapper.toItemDto(itemStorage.create(ItemMapper.toItem(item)));
@@ -29,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(Long id, ItemDto newItem, Long owner) {
         log.info("Метод: update. {}", newItem);
-        validate(newItem, owner);
+        validateOwner(owner);
         newItem.setOwner(owner);
         return ItemMapper.toItemDto(itemStorage.update(id, ItemMapper.toItem(newItem)));
     }
@@ -65,12 +67,14 @@ public class ItemServiceImpl implements ItemService {
     ------------------------------------------------ СЛУЖЕБНЫЕ МЕТОДЫ
 */
 
-    // Проверка вещи
-    private void validate(ItemDto item, Long owner) {
+    // Проверка владельца вещи
+    private void validateOwner(Long owner) {
         if (owner == null) {
             String message = "Владелец не может быть пустым";
             log.error(message);
             throw new ValidationException(message);
         }
+        // Если пользователя нет, исключение будет в методе getUserById
+        userService.findUserById(owner);
     }
 }
