@@ -19,17 +19,18 @@ public class ItemDto {
         this.available = available;
         this.owner = owner;
         this.request = request;
-        this.comments = new ArrayList<>(); // по умолчанию пустой список
+        this.comments = new ArrayList<>();
     }
 
-    public ItemDto() {}
+    public ItemDto() {
+    }
 
     private Long id;
     @NotBlank(message = "Имя вещи не может быть пустым")
     private String name;
     @NotBlank(message = "Поле 'description' не может быть пустым")
     private String description;
-    @NotNull (message = "Поле 'available' не может быть пустым")
+    @NotNull(message = "Поле 'available' не может быть пустым")
     private Boolean available;
     private Long owner; //— владелец вещи;
     private Long request; //— если вещь была создана по запросу другого пользователя, то в это поле будет храниться ссылка на соответствующий запрос.
