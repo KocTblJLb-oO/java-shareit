@@ -1,14 +1,8 @@
 package ru.practicum.shareit.user;
 
-public interface UserStorage {
-    // Создание пользователя
-    User create(User user);
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    //Обновление пользователя
-    User update(long id, User newUser);
-
-    User findUserById(long id);
-
-    // Удаление пользователя
-    void deleteUser(long id);
+@Repository
+public interface UserStorage extends JpaRepository<User, Long> {
 }
