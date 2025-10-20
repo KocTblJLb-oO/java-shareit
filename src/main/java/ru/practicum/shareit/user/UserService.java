@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserStorage userStorage;
@@ -39,7 +39,6 @@ public class UserService {
     }
 
     // Получение пользователя
-    @Transactional
     public UserDto findUserById(long id) {
         return UserMapper.toUserDto(userStorage.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден")));

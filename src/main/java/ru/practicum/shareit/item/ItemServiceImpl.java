@@ -26,7 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserService userService;
@@ -73,7 +73,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // Получение вещи
-    @Transactional
     @Override
     public ItemDto findItemById(long id, long owner) {
         log.info("Метод: findItemById. {}, owner {}", id, owner);
@@ -100,7 +99,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // Получение всех вещей пользователя
-    @Transactional
     @Override
     public List<ItemDto> getAllItemsFromUser(Long owner) {
         log.info("Метод: getAllItemsFromUser. {}", owner);
@@ -127,7 +125,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // Поиск вещи
-    @Transactional
     @Override
     public List<ItemDto> itemSearch(String text) {
         log.info("Метод: itemSearch. {}", text);

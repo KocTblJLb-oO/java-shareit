@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
     private final BookingStorage bookingStorage;
     private final ItemService itemService;
