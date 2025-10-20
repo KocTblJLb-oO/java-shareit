@@ -74,6 +74,7 @@ public class ItemServiceImpl implements ItemService {
 
     // Получение вещи
     @Override
+    @Transactional
     public ItemDto findItemById(long id, long owner) {
         log.info("Метод: findItemById. {}, owner {}", id, owner);
 
