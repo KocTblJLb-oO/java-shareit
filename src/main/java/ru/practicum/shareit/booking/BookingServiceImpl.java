@@ -30,6 +30,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserService userService;
 
     @Override
+    @Transactional
     public BookingDtoResponse create(BookingDto bookingDto, Long bookerId) {
         log.info("Метод: create. {}, {}", bookingDto, bookerId);
 
