@@ -30,7 +30,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(ItemDto itemDto, Long ownerId) {
-        return post("",  itemDto, ownerId);
+        return post("", itemDto, ownerId);
     }
 
     public ResponseEntity<Object> update(Long itemId, ItemDto itemDto, Long ownerId) {
@@ -49,8 +49,8 @@ public class ItemClient extends BaseClient {
         return get("/search?text=" + text);
     }
 
-    public ResponseEntity<Object> addComment(Long userId, Long itemId,  String text) {
+    public ResponseEntity<Object> addComment(Long userId, Long itemId, String text) {
         Map<String, String> comment = Collections.singletonMap("text", text);
-        return post("/" + itemId + "/comment",comment , userId);
+        return post("/" + itemId + "/comment", comment, userId);
     }
 }

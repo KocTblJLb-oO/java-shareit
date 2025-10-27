@@ -35,7 +35,7 @@ public class BaseClient {
         return post(path, null, null, body);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, T body , long userId) {
+    protected <T> ResponseEntity<Object> post(String path, T body, long userId) {
         return post(path, userId, null, body);
     }
 
