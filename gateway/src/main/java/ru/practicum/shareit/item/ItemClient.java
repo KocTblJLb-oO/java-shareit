@@ -33,7 +33,7 @@ public class ItemClient extends BaseClient {
         return post("", itemDto, ownerId);
     }
 
-    public ResponseEntity<Object> update(Long itemId, ItemDto itemDto, Long ownerId) {
+    public ResponseEntity<Object> update(Long itemId,ItemDto itemDto, Long ownerId) {
         return patch("/" + itemId, ownerId, itemDto);
     }
 
