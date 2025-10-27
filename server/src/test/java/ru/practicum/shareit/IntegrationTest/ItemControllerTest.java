@@ -35,13 +35,13 @@ class ItemControllerTest {
     @Test
     void createItem_shouldReturnItemDto() throws Exception {
         ItemDto itemDto = new ItemDto();
-        itemDto.setName("Название");
+        itemDto.setName("Название!");
         itemDto.setDescription("Описание");
         itemDto.setAvailable(true);
 
         ItemDto saved = new ItemDto();
         saved.setId(1L);
-        saved.setName("Название");
+        saved.setName("Название!");
         saved.setDescription("Описание");
         saved.setAvailable(true);
 
@@ -78,7 +78,7 @@ class ItemControllerTest {
     void findItemById_shouldReturnItem() throws Exception {
         ItemDto item = new ItemDto();
         item.setId(1L);
-        item.setName("Название");
+        item.setName("Название!");
 
         when(itemService.findItemById(anyLong(), anyLong())).thenReturn(item);
 
@@ -91,7 +91,7 @@ class ItemControllerTest {
     void getAllItemsFromUser_shouldReturnListOfItems() throws Exception {
         ItemDto item = new ItemDto();
         item.setId(1L);
-        item.setName("Название");
+        item.setName("Название!");
 
         when(itemService.getAllItemsFromUser(anyLong()))
                 .thenReturn(Collections.singletonList(item));
@@ -105,13 +105,13 @@ class ItemControllerTest {
     void itemSearch_shouldReturnListOfItems() throws Exception {
         ItemDto item = new ItemDto();
         item.setId(1L);
-        item.setName("Название");
+        item.setName("Название!");
 
         when(itemService.itemSearch(anyString()))
                 .thenReturn(Collections.singletonList(item));
 
         mockMvc.perform(get("/items/search")
-                        .param("text", "Название"))
+                        .param("text", "Название!"))
                 .andExpect(status().isOk());
     }
 
