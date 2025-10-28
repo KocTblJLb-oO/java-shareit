@@ -1,4 +1,4 @@
-package ru.practicum.shareit.IntegrationTest;
+package ru.practicum.shareit.IntegrationTest.item;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +21,21 @@ class ItemRequestServiceIntegrationTest {
     private ItemRequestService itemRequestService;
 
     @Autowired
-    private UserService userService; // предполагается, что UserService доступен
+    private UserService userService;
 
     @Test
     void create_shouldSaveItemRequestAndReturnWithId() {
-        // 1. Создаём пользователя
         UserDto userDto = new UserDto();
         userDto.setName("Alice");
         userDto.setEmail("alice@example.com");
         UserDto savedUser = userService.create(userDto);
         Long userId = savedUser.getId();
 
-        // 2. Создаём запрос
         ItemRequestDto requestDto = new ItemRequestDto();
         requestDto.setDescription("Нужна дрель");
 
-        // 3. Вызываем тестируемый метод
         ItemRequestDto savedRequest = itemRequestService.create(requestDto, userId);
 
-        // 4. Проверяем результат
         assertThat(savedRequest).isNotNull();
         assertThat(savedRequest.getId()).isNotNull();
         assertThat(savedRequest.getDescription()).isEqualTo("Нужна дрель");
