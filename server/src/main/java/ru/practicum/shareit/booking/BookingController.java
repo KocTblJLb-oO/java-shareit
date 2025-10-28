@@ -18,7 +18,7 @@ public class BookingController {
     private final BookingService bookingService;
 
 
-    // Создание бронирования
+    // Создание бронирования.
     @PostMapping
     public BookingDtoResponse createBooking(@RequestBody BookingDto bookingDto,
                                             @RequestHeader("X-Sharer-User-Id") Long booker) {
