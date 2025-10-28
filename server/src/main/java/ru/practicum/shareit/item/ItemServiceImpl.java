@@ -147,9 +147,9 @@ public class ItemServiceImpl implements ItemService {
 
                     LocalDateTime now = LocalDateTime.now();
                     Booking last = bookingStorage.findFirstByItemIdAndEndBeforeAndStatusOrderByEndDesc(
-                            owner, now, StatusOfBooking.APPROVED);
+                            item.getId(), now, StatusOfBooking.APPROVED);
                     Booking next = bookingStorage.findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(
-                            owner, now, StatusOfBooking.APPROVED);
+                            item.getId(), now, StatusOfBooking.APPROVED);
 
                     itemDto.setLastBooking(last != null ? BookingMapper.toBookingDtoResponse(last, item, last.getBooker()) : null);
                     itemDto.setNextBooking(next != null ? BookingMapper.toBookingDtoResponse(next, item, next.getBooker()) : null);
